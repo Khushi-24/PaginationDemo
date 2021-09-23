@@ -1,21 +1,27 @@
-package com.example.PaginationDemo.Student;
+package com.example.PaginationDemo.ServiceImpl;
 
 import com.example.PaginationDemo.CustomException.BadRequestException;
+import com.example.PaginationDemo.Repository.StudentRepository;
+import com.example.PaginationDemo.Service.StudentService;
+import com.example.PaginationDemo.dto.StudentDto;
+import com.example.PaginationDemo.entities.Student;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class StudentServiceImpl {
+public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
 
+    @Override
     public StudentDto addStudent(StudentDto studentDto) {
         Student student = new Student();
         student.setStudentId(studentDto.getStudentId());
@@ -32,6 +38,19 @@ public class StudentServiceImpl {
         return studentResponse;
     }
 
+    @Override
+    public StudentDto updateStudent(StudentDto studentDto) {
+
+        if(studentRepository.existsById(studentDto.getStudentId())){
+            return addStudent(studentDto);
+        }
+        else{
+            throw new EntityNotFoundException("Student doesn't exists so can't be updated");
+        }
+
+    }
+
+    @Override
     public List<StudentDto> getAllStudent() {
         List<StudentDto> studentDtoList = studentRepository.findAll().stream().map(student ->{
             StudentDto studentDto = new StudentDto();
@@ -50,9 +69,34 @@ public class StudentServiceImpl {
         }
     }
 
+    @Override
     public Page<Student>  findPaginated(int pageNo){
         int pageSize = 5;
         Pageable pageable = PageRequest.of(pageNo -1, pageSize);
         return this.studentRepository.findAll(pageable);
     }
+
+    @Override
+    public StudentDto getStudent(Long studentId) {
+        Student student = studentRepository.findById(studentId).get();
+        StudentDto studentDto = new StudentDto();
+        studentDto.setStudentId(student.getStudentId());
+        studentDto.setStudentName(student.getStudentName());
+        studentDto.setStudentDivision(student.getStudentDivision());
+        studentDto.setStudentAge(student.getStudentAge());
+        return studentDto;
+    }
+
+    @Override
+    public void deleteStudent(Long studentId) {
+        if(studentRepository.existsById(studentId)){
+            Student student = studentRepository.getOne(studentId);
+            studentRepository.delete(student);
+        }
+        else {
+            throw new EntityNotFoundException("Student doesn't exist so can't be deleted");
+        }
+    }
+
+
 }

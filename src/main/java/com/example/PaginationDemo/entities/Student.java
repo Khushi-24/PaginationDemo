@@ -1,4 +1,4 @@
-package com.example.PaginationDemo.Student;
+package com.example.PaginationDemo.entities;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

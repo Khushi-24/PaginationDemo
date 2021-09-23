@@ -1,5 +1,6 @@
-package com.example.PaginationDemo.Student;
+package com.example.PaginationDemo.Repository;
 
+import com.example.PaginationDemo.entities.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
