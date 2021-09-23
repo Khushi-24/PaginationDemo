@@ -1,6 +1,6 @@
 package com.example.PaginationDemo.ServiceImpl;
 
-import com.example.PaginationDemo.CustomException.BadRequestException;
+import com.example.PaginationDemo.CustomException.NoRecordFoundException;
 import com.example.PaginationDemo.Repository.StudentRepository;
 import com.example.PaginationDemo.Service.StudentService;
 import com.example.PaginationDemo.dto.StudentDto;
@@ -62,7 +62,7 @@ public class StudentServiceImpl implements StudentService {
         }).collect(Collectors.toList());
 
         if(studentDtoList.isEmpty()){
-            throw  new BadRequestException("Student list is empty.");
+            throw  new NoRecordFoundException("Student list is empty.");
         }
         else{
             return studentDtoList;
@@ -78,13 +78,18 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentDto getStudent(Long studentId) {
-        Student student = studentRepository.findById(studentId).get();
-        StudentDto studentDto = new StudentDto();
-        studentDto.setStudentId(student.getStudentId());
-        studentDto.setStudentName(student.getStudentName());
-        studentDto.setStudentDivision(student.getStudentDivision());
-        studentDto.setStudentAge(student.getStudentAge());
-        return studentDto;
+        if (studentRepository.existsById(studentId)) {
+            Student student = studentRepository.findById(studentId).get();
+            StudentDto studentDto = new StudentDto();
+            studentDto.setStudentId(student.getStudentId());
+            studentDto.setStudentName(student.getStudentName());
+            studentDto.setStudentDivision(student.getStudentDivision());
+            studentDto.setStudentAge(student.getStudentAge());
+            return studentDto;
+        }
+        else {
+            throw new EntityNotFoundException("Student doesn't exist");
+        }
     }
 
     @Override
