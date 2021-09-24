@@ -24,4 +24,9 @@ public class CourseStudent {
     @JoinColumn(name = "studentId", referencedColumnName = "studentId")
     private Student student;
 
+
+    public CourseStudent(Student student, Course course) {
+        this.student = student;
+        this.course = course;
+    }
 }

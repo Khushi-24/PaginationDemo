@@ -1,6 +1,7 @@
 package com.example.PaginationDemo.Service;
 
 import com.example.PaginationDemo.dto.CourseDto;
+import com.example.PaginationDemo.dto.CourseStudentRequestDto;
 import com.example.PaginationDemo.entities.Course;
 import org.springframework.data.domain.Page;
 
@@ -18,4 +19,10 @@ public interface CourseService {
     Page<Course> findPaginated(int pageNo);
 
     CourseDto getCourse(Long courseId);
+
+    void addStudentToCourse(CourseStudentRequestDto request);
+
+    void deleteStudentAndCourseFromCourseStudentTable(CourseStudentRequestDto courseStudentRequestDto);
+
+    void deleteCourseFromCourseStudentTable(Long courseId);
 }

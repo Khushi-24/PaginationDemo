@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class CourseStudentDto {
+public class CourseStudentDtoResponse {
 
     //CourseStudent table id
     private Long courseStudentId;

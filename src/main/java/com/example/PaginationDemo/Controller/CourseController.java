@@ -2,9 +2,8 @@ package com.example.PaginationDemo.Controller;
 
 import com.example.PaginationDemo.Service.CourseService;
 import com.example.PaginationDemo.dto.CourseDto;
-import com.example.PaginationDemo.dto.StudentDto;
+import com.example.PaginationDemo.dto.CourseStudentRequestDto;
 import com.example.PaginationDemo.entities.Course;
-import com.example.PaginationDemo.entities.Student;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -18,14 +17,6 @@ import java.util.List;
 public class CourseController {
 
     private final CourseService courseService;
-
-    @PostMapping("/addCourse")
-    public ResponseEntity<?> addCourses(@RequestBody CourseDto courseDto){
-
-        CourseDto addCourse= courseService.addCourse(courseDto);
-        return new ResponseEntity<>(addCourse, HttpStatus.CREATED);
-
-    }
 
     @GetMapping("/getAllCourses")
     public ResponseEntity<?> getAllCourses(){
@@ -43,8 +34,24 @@ public class CourseController {
     @GetMapping("/getAllCourseByCourseId/{courseId}")
     public  ResponseEntity<?> getCourse(@PathVariable Long courseId){
         CourseDto dto = courseService.getCourse(courseId);
+        //List<Student> studentList = courseService
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
+    @PostMapping("/addCourse")
+    public ResponseEntity<?> addCourses(@RequestBody CourseDto courseDto){
+
+        CourseDto addCourse= courseService.addCourse(courseDto);
+        return new ResponseEntity<>(addCourse, HttpStatus.CREATED);
+
+    }
+
+    @PostMapping("/addStudentToCourse/studentId/courseId")
+    public ResponseEntity<?> addStudentToCourse(@RequestBody CourseStudentRequestDto request) {
+        courseService.addStudentToCourse(request);
+        return ResponseEntity.ok("Student added to Course successfully.");
+    }
+
     @PutMapping("/updateCourse")
     public ResponseEntity<CourseDto> updateCourse(@RequestBody CourseDto courseDto){
         CourseDto update_course= courseService.updateCourse(courseDto);
@@ -57,4 +64,15 @@ public class CourseController {
         return ResponseEntity.ok("Course deleted successfully.");
     }
 
+    @DeleteMapping("deleteCourseFromCourseStudentTable/{courseId}")
+    public ResponseEntity<?> deleteCourseFromCourseStudentTable(@PathVariable Long courseId){
+        courseService.deleteCourseFromCourseStudentTable(courseId);
+        return ResponseEntity.ok("Course deleted successfully.");
+    }
+
+    @DeleteMapping("/deleteStudentAndCourseFromCourseStudentTable")
+    public ResponseEntity<?> deleteStudentAndCourseFromCourseStudentTable(@RequestBody CourseStudentRequestDto courseStudentRequestDto){
+        courseService.deleteStudentAndCourseFromCourseStudentTable(courseStudentRequestDto);
+        return ResponseEntity.ok("Student And Teacher Deleted From Course Successfully");
+    }
 }

@@ -37,7 +37,7 @@ public class StudentController {
         return new ResponseEntity<>(listStudent, HttpStatus.OK);
     }
 
-    @GetMapping("/getStudentByStudentId/{studentId}")
+    @GetMapping("/getStudent/{studentId}")
     public  ResponseEntity<?> getStudent(@PathVariable Long studentId){
         StudentDto dto = studentService.getStudent(studentId);
         return new ResponseEntity<>(dto, HttpStatus.OK);
@@ -54,4 +54,6 @@ public class StudentController {
         studentService.deleteStudent(studentId);
         return  ResponseEntity.ok("Student deleted successfully.");
     }
+
+
 }

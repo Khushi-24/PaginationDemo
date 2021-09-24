@@ -29,6 +29,10 @@ dependencies {
 	// https://mvnrepository.com/artifact/javax.validation/validation-api
 	implementation 'javax.validation:validation-api:2.0.0.Final'
 
+//	// https://mvnrepository.com/artifact/net.rakugakibox.spring.boot/orika-spring-boot-starter
+//	implementation group: 'net.rakugakibox.spring.boot', name: 'orika-spring-boot-starter', version: '1.9.0'
+
+
 }
 
 test {
