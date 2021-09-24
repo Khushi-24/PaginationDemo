@@ -3,6 +3,8 @@ package com.example.PaginationDemo.Controller;
 import com.example.PaginationDemo.Service.CourseService;
 import com.example.PaginationDemo.dto.CourseDto;
 import com.example.PaginationDemo.dto.CourseStudentRequestDto;
+import com.example.PaginationDemo.dto.CourseTeacherDto;
+import com.example.PaginationDemo.dto.CourseTeacherRequestDto;
 import com.example.PaginationDemo.entities.Course;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -70,9 +72,21 @@ public class CourseController {
         return ResponseEntity.ok("Course deleted successfully.");
     }
 
+    @DeleteMapping("deleteCourseFromCourseTeacherTable/{courseId}")
+    public ResponseEntity<?> deleteCourseFromCourseTeacherTable(@PathVariable Long courseId){
+        courseService.deleteCourseFromCourseTeacherTable(courseId);
+        return ResponseEntity.ok("Course deleted successfully.");
+    }
+
     @DeleteMapping("/deleteStudentAndCourseFromCourseStudentTable")
     public ResponseEntity<?> deleteStudentAndCourseFromCourseStudentTable(@RequestBody CourseStudentRequestDto courseStudentRequestDto){
         courseService.deleteStudentAndCourseFromCourseStudentTable(courseStudentRequestDto);
-        return ResponseEntity.ok("Student And Teacher Deleted From Course Successfully");
+        return ResponseEntity.ok("Student And Course Deleted From CourseStudent table Successfully");
+    }
+
+    @DeleteMapping("/deleteTeacherAndCourseFromCourseTeacherTable")
+    public ResponseEntity<?> deleteTeacherAndCourseFromCourseTeacherTable(@RequestBody CourseTeacherRequestDto courseTeacherRequestDto){
+        courseService.deleteTeacherAndCourseFromCourseTeacherTable(courseTeacherRequestDto);
+        return ResponseEntity.ok("Teacher And Course Deleted From CourseTeacher Successfully");
     }
 }

@@ -2,15 +2,15 @@ package com.example.PaginationDemo.ServiceImpl;
 
 import com.example.PaginationDemo.CustomException.BadRequestException;
 import com.example.PaginationDemo.CustomException.NoRecordFoundException;
-import com.example.PaginationDemo.Repository.CourseRepository;
-import com.example.PaginationDemo.Repository.CourseStudentRepository;
-import com.example.PaginationDemo.Repository.StudentRepository;
+import com.example.PaginationDemo.Repository.*;
 import com.example.PaginationDemo.Service.CourseService;
 import com.example.PaginationDemo.dto.CourseDto;
 import com.example.PaginationDemo.dto.CourseStudentRequestDto;
+import com.example.PaginationDemo.dto.CourseTeacherRequestDto;
 import com.example.PaginationDemo.entities.Course;
 import com.example.PaginationDemo.entities.CourseStudent;
 import com.example.PaginationDemo.entities.Student;
+import com.example.PaginationDemo.entities.Teacher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +28,10 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
 
     private final StudentRepository studentRepository;
+
+    private  final TeacherRepository teacherRepository;
+
+    private final CourseTeacherRepository courseTeacherRepository;
 
     private final CourseStudentRepository courseStudentRepository;
 
@@ -186,6 +190,46 @@ public class CourseServiceImpl implements CourseService {
             throw new BadRequestException("Course Id can't be null");
         }
     }
+
+    @Override
+    public void deleteCourseFromCourseTeacherTable(Long courseId) {
+        if (courseId != null) {
+            courseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException("Course does not exist"));
+            if(courseTeacherRepository.existsByCourseCourseId(courseId)) {
+                courseTeacherRepository.deleteByCourseId(courseId);
+            }else {
+                throw new EntityNotFoundException("Course doesn't exist so can't be deleted");
+            }
+        }
+        else{
+            throw new BadRequestException("Course Id can't be null");
+        }
+    }
+
+    @Override
+    public void deleteTeacherAndCourseFromCourseTeacherTable(CourseTeacherRequestDto courseTeacherRequestDto) {
+        if(courseTeacherRequestDto.getTeacherId() == null || courseTeacherRequestDto.getCourseId() == null){
+            if(courseTeacherRequestDto.getTeacherId() == null){
+                throw  new BadRequestException("Teacher Id can't be null");
+            }
+            if(courseTeacherRequestDto.getCourseId() == null){
+                throw  new BadRequestException("Course Id can't be null");
+            }
+        }
+        else{
+            Teacher teacher = teacherRepository.findById(courseTeacherRequestDto.getTeacherId()).orElseThrow(() -> new EntityNotFoundException("Student does not exist."));
+            Course course = courseRepository.findById(courseTeacherRequestDto.getCourseId()).orElseThrow(() -> new EntityNotFoundException("Course does not exist"));
+
+            if(courseTeacherRepository.existsByCourseAndTeacher(course, teacher)){
+                courseTeacherRepository.deleteByCourseCourseIdAndTeacherTeacherId(courseTeacherRequestDto.getCourseId(), courseTeacherRequestDto.getTeacherId());
+            }
+            else{
+                throw new NoRecordFoundException("No such entry exists");
+            }
+        }
+    }
+
+
 
 
 }

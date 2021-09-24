@@ -32,4 +32,7 @@ public class Course
     @OneToMany(mappedBy = "course")
     private Set<CourseStudent> courseStudentSet = new HashSet<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "course")
+    private Set<CourseTeacher> courseTeacherSet = new HashSet<>();
 }
