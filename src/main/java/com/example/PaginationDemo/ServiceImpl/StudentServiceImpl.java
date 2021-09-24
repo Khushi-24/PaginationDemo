@@ -1,9 +1,12 @@
 package com.example.PaginationDemo.ServiceImpl;
 
+import com.example.PaginationDemo.CustomException.BadRequestException;
 import com.example.PaginationDemo.CustomException.NoRecordFoundException;
+import com.example.PaginationDemo.Repository.CourseStudentRepository;
 import com.example.PaginationDemo.Repository.StudentRepository;
 import com.example.PaginationDemo.Service.StudentService;
 import com.example.PaginationDemo.dto.StudentDto;
+import com.example.PaginationDemo.entities.Course;
 import com.example.PaginationDemo.entities.Student;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,34 +24,8 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
 
-    @Override
-    public StudentDto addStudent(StudentDto studentDto) {
-        Student student = new Student();
-        student.setStudentId(studentDto.getStudentId());
-        student.setStudentName(studentDto.getStudentName());
-        student.setStudentDivision(studentDto.getStudentDivision());
-        student.setStudentAge(studentDto.getStudentAge());
-        Student savedStudent =studentRepository.save(student);
+    private final CourseStudentRepository courseStudentRepository;
 
-        StudentDto studentResponse = new StudentDto();
-        studentResponse.setStudentId(savedStudent.getStudentId());
-        studentResponse.setStudentName(savedStudent.getStudentName());
-        studentResponse.setStudentDivision(savedStudent.getStudentDivision());
-        studentResponse.setStudentAge(savedStudent.getStudentAge());
-        return studentResponse;
-    }
-
-    @Override
-    public StudentDto updateStudent(StudentDto studentDto) {
-
-        if(studentRepository.existsById(studentDto.getStudentId())){
-            return addStudent(studentDto);
-        }
-        else{
-            throw new EntityNotFoundException("Student doesn't exists so can't be updated");
-        }
-
-    }
 
     @Override
     public List<StudentDto> getAllStudent() {
@@ -93,13 +70,55 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void deleteStudent(Long studentId) {
-        if(studentRepository.existsById(studentId)){
-            Student student = studentRepository.getOne(studentId);
-            studentRepository.delete(student);
+    public StudentDto addStudent(StudentDto studentDto) {
+        Student student = new Student();
+        student.setStudentId(studentDto.getStudentId());
+        student.setStudentName(studentDto.getStudentName());
+        student.setStudentDivision(studentDto.getStudentDivision());
+        student.setStudentAge(studentDto.getStudentAge());
+        Student savedStudent =studentRepository.save(student);
+
+        StudentDto studentResponse = new StudentDto();
+        studentResponse.setStudentId(savedStudent.getStudentId());
+        studentResponse.setStudentName(savedStudent.getStudentName());
+        studentResponse.setStudentDivision(savedStudent.getStudentDivision());
+        studentResponse.setStudentAge(savedStudent.getStudentAge());
+        return studentResponse;
+    }
+
+    @Override
+    public StudentDto updateStudent(StudentDto studentDto) {
+
+        if(studentRepository.existsById(studentDto.getStudentId())){
+            return addStudent(studentDto);
         }
-        else {
-            throw new EntityNotFoundException("Student doesn't exist so can't be deleted");
+        else{
+            throw new EntityNotFoundException("Student doesn't exists so can't be updated");
+        }
+
+    }
+
+    @Override
+    public void deleteStudent(Long studentId) {
+        deleteStudentFromCourseStudentTable(studentId);
+//        Student student = studentRepository.getById(studentId);
+//        studentRepository.delete(student);
+        studentRepository.deleteStudentById(studentId);
+    }
+
+    @Override
+    public void deleteStudentFromCourseStudentTable(Long studentId) {
+        if (studentId != null) {
+            studentRepository.findById(studentId).orElseThrow(() -> new EntityNotFoundException("Student does not exist"));
+            if(courseStudentRepository.existsByStudentStudentId(studentId)) {
+                courseStudentRepository.deleteByStudentId(studentId);
+            }else {
+                throw new EntityNotFoundException("Student doesn't exist so can't be deleted");
+            }
+
+        }
+        else{
+            throw new BadRequestException("Student Id can't be null");
         }
     }
 

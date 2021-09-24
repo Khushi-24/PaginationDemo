@@ -18,12 +18,6 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    @PostMapping("/addStudent")
-    public ResponseEntity<?> addStudent(@Valid @RequestBody StudentDto studentDto){
-        StudentDto dto = studentService.addStudent(studentDto);
-        return new ResponseEntity<>(dto,HttpStatus.CREATED);
-    }
-
     @GetMapping("/getAllStudent")
     public ResponseEntity<?> getAllStudents(){
         List<StudentDto> dto = studentService.getAllStudent();
@@ -43,6 +37,12 @@ public class StudentController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+    @PostMapping("/addStudent")
+    public ResponseEntity<?> addStudent(@Valid @RequestBody StudentDto studentDto){
+        StudentDto dto = studentService.addStudent(studentDto);
+        return new ResponseEntity<>(dto,HttpStatus.CREATED);
+    }
+
     @PutMapping("/updateStudent")
     public ResponseEntity<?> updateStudent(@Valid @RequestBody StudentDto studentDto){
         StudentDto dto = studentService.updateStudent(studentDto);
@@ -53,6 +53,12 @@ public class StudentController {
     public ResponseEntity<?> deleteStudent(@PathVariable Long studentId){
         studentService.deleteStudent(studentId);
         return  ResponseEntity.ok("Student deleted successfully.");
+    }
+
+    @DeleteMapping("deleteStudentFromCourseStudentTable/{studentId}")
+    public ResponseEntity<?> deleteStudentFromCourseStudentTable(@PathVariable Long studentId){
+        studentService.deleteStudentFromCourseStudentTable(studentId);
+        return ResponseEntity.ok("Student deleted successfully.");
     }
 
 

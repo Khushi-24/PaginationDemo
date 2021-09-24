@@ -143,8 +143,9 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void deleteCourse(Long courseId) {
         deleteCourseFromCourseStudentTable(courseId);
-        Course course = courseRepository.getById(courseId);
-        courseRepository.delete(course);
+//        Course course = courseRepository.getById(courseId);
+//        courseRepository.delete(course);
+        courseRepository.deleteCourseById(courseId);
     }
 
 
@@ -180,7 +181,6 @@ public class CourseServiceImpl implements CourseService {
             }else {
                 throw new EntityNotFoundException("Course doesn't exist so can't be deleted");
             }
-
         }
         else{
             throw new BadRequestException("Course Id can't be null");

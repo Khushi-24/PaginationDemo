@@ -31,4 +31,10 @@ public interface CourseStudentRepository extends JpaRepository<CourseStudent, Lo
     @Query(value = "DELETE FROM `course_student` WHERE course_id = ?1", nativeQuery = true)
     void deleteByCourseId(Long courseId);
 
+    boolean existsByStudentStudentId(Long studentId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM `course_student` WHERE student_id = ?1", nativeQuery = true)
+    void deleteByStudentId(Long studentId);
 }
