@@ -7,10 +7,7 @@ import com.example.PaginationDemo.Service.CourseService;
 import com.example.PaginationDemo.dto.CourseDto;
 import com.example.PaginationDemo.dto.CourseStudentRequestDto;
 import com.example.PaginationDemo.dto.CourseTeacherRequestDto;
-import com.example.PaginationDemo.entities.Course;
-import com.example.PaginationDemo.entities.CourseStudent;
-import com.example.PaginationDemo.entities.Student;
-import com.example.PaginationDemo.entities.Teacher;
+import com.example.PaginationDemo.entities.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -62,6 +59,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDto addCourse(CourseDto courseDto) {
+        if(courseDto.getCourseName() == null){
+            throw new BadRequestException("Can't be null");
+        }
         Course course = new Course();
         course.setCourseId(courseDto.getCourseId());
         course.setCourseName(courseDto.getCourseName());
@@ -130,6 +130,27 @@ public class CourseServiceImpl implements CourseService {
             CourseStudent courseStudent = new CourseStudent(student, course);
             if(!courseStudentRepository.existsByCourseAndStudent(course, student)){
                 courseStudentRepository.save(courseStudent);
+            }
+        }
+    }
+
+    @Override
+    public void addTeacherToCourse(CourseTeacherRequestDto request) {
+        if(request.getTeacherId() == null || request.getCourseId() == null){
+            if(request.getTeacherId() == null){
+                throw  new BadRequestException("Teacher Id can't be null");
+            }
+            if(request.getCourseId() == null){
+                throw  new BadRequestException("Course Id can't be null");
+            }
+        }
+        else{
+            Teacher teacher = teacherRepository.findById(request.getTeacherId()).orElseThrow(() -> new EntityNotFoundException("Teacher does not exist."));
+            Course course = courseRepository.findById(request.getCourseId()).orElseThrow(() -> new EntityNotFoundException("Course does not exist"));
+
+            CourseTeacher courseTeacher = new CourseTeacher(teacher, course);
+            if(!courseTeacherRepository.existsByCourseAndTeacher(course, teacher)){
+                courseTeacherRepository.save(courseTeacher);
             }
         }
     }
@@ -205,6 +226,8 @@ public class CourseServiceImpl implements CourseService {
             throw new BadRequestException("Course Id can't be null");
         }
     }
+
+
 
     @Override
     public void deleteTeacherAndCourseFromCourseTeacherTable(CourseTeacherRequestDto courseTeacherRequestDto) {

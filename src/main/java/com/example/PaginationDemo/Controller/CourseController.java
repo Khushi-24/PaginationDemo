@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -41,7 +42,7 @@ public class CourseController {
     }
 
     @PostMapping("/addCourse")
-    public ResponseEntity<?> addCourses(@RequestBody CourseDto courseDto){
+    public ResponseEntity<?> addCourses(@Valid @RequestBody CourseDto courseDto){
 
         CourseDto addCourse= courseService.addCourse(courseDto);
         return new ResponseEntity<>(addCourse, HttpStatus.CREATED);
@@ -52,6 +53,12 @@ public class CourseController {
     public ResponseEntity<?> addStudentToCourse(@RequestBody CourseStudentRequestDto request) {
         courseService.addStudentToCourse(request);
         return ResponseEntity.ok("Student added to Course successfully.");
+    }
+
+    @PostMapping("/addTeacherToCourse/teacherId/courseId")
+    public ResponseEntity<?> addTeacherToCourse(@RequestBody CourseTeacherRequestDto request) {
+        courseService.addTeacherToCourse(request);
+        return ResponseEntity.ok("Teacher added to Course successfully.");
     }
 
     @PutMapping("/updateCourse")

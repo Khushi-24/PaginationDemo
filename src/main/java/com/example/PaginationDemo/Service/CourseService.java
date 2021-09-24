@@ -31,4 +31,6 @@ public interface CourseService {
     void deleteTeacherAndCourseFromCourseTeacherTable(CourseTeacherRequestDto courseTeacherRequestDto);
 
     void deleteCourseFromCourseTeacherTable(Long courseId);
+
+    void addTeacherToCourse(CourseTeacherRequestDto request);
 }

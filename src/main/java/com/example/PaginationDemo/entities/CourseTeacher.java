@@ -23,4 +23,9 @@ public class CourseTeacher {
     @ManyToOne
     @JoinColumn(name = "teacherId", referencedColumnName = "teacherId")
     private Teacher teacher;
+
+    public CourseTeacher(Teacher teacher, Course course){
+        this.teacher = teacher;
+        this.course = course;
+    }
 }

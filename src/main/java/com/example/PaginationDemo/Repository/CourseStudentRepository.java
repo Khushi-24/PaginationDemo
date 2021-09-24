@@ -3,6 +3,7 @@ package com.example.PaginationDemo.Repository;
 import com.example.PaginationDemo.entities.Course;
 import com.example.PaginationDemo.entities.CourseStudent;
 import com.example.PaginationDemo.entities.Student;
+import com.example.PaginationDemo.entities.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
