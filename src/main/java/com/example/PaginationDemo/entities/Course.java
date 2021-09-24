@@ -1,10 +1,13 @@
 package com.example.PaginationDemo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity(name = "course")
 @NoArgsConstructor
@@ -25,5 +28,8 @@ public class Course
     @Column
     private String courseDescription;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "course")
+    private Set<CourseStudent> courseStudentSet = new HashSet<>();
 
 }
