@@ -34,5 +34,6 @@ public class CourseDto {
     //@NotBlank(message = "Course Description can't be blank.")
     private String courseDescription;
 
-    private List<Student> studentList;
+    private List<StudentResponseDto> studentList;
+
 }

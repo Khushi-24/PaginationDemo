@@ -1,10 +1,20 @@
 package com.example.PaginationDemo.entities;
 
+import com.example.PaginationDemo.dto.CourseDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+//
+//@NamedNativeQuery(name = "CourseStudent.getStudentByCourseCourseId",
+//        query = "SELECT p.first_name as first, p.last_name as last FROM Chess_Player p WHERE id = :id",
+//        resultSetMapping = "Mapping.PlayerNameDto")
+//@SqlResultSetMapping(name = "Mapping.PlayerNameDto",
+//        classes = @ConstructorResult(targetClass = CourseDto.class,
+//                columns = {@ColumnResult(name = "first"),
+//                        @ColumnResult(name = "last")}))
+//
 
 @Entity(name = "courseStudent")
 @Getter

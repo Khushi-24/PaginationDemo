@@ -4,17 +4,17 @@ import com.example.PaginationDemo.CustomException.BadRequestException;
 import com.example.PaginationDemo.CustomException.NoRecordFoundException;
 import com.example.PaginationDemo.Repository.*;
 import com.example.PaginationDemo.Service.CourseService;
-import com.example.PaginationDemo.dto.CourseDto;
-import com.example.PaginationDemo.dto.CourseStudentRequestDto;
-import com.example.PaginationDemo.dto.CourseTeacherRequestDto;
+import com.example.PaginationDemo.dto.*;
 import com.example.PaginationDemo.entities.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,8 +96,17 @@ public class CourseServiceImpl implements CourseService {
             courseDto.setCourseName(course.getCourseName());
             courseDto.setCourseDuration(course.getCourseDuration());
             courseDto.setCourseDescription(course.getCourseDescription());
-            List<Student> studentList = courseStudentRepository.getStudentByCourseId(courseDto.getCourseId());
-            courseDto.setStudentList(studentList);
+            List<CourseDto> studentList = courseStudentRepository.getStudentByCourseCourseId(courseDto.getCourseId());
+         //   courseDto.setStudentList(studentList);
+            //courseDto.setStudentList(studentList);
+//            for(int i=0;i<studentList.size();i++){
+//                System.out.println("Hello");
+//                System.out.println(studentList.get(i));
+//            }
+//            List<CourseDto> courseDtoList = new ArrayList<>();
+//            BeanUtils.copyProperties(studentList, courseDtoList);
+            System.out.println("Hello" + studentList.size());
+            //courseDto.setStudentList(studentList);
 //            getList(studentList);
 //            List<Student> resultantStudentList= new ArrayList<>();
 //            for(Student student : studentList ){

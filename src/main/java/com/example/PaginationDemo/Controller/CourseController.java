@@ -1,10 +1,9 @@
 package com.example.PaginationDemo.Controller;
 
+import com.example.PaginationDemo.CustomException.BadRequestException;
+import com.example.PaginationDemo.CustomException.ResetContent;
 import com.example.PaginationDemo.Service.CourseService;
-import com.example.PaginationDemo.dto.CourseDto;
-import com.example.PaginationDemo.dto.CourseStudentRequestDto;
-import com.example.PaginationDemo.dto.CourseTeacherDto;
-import com.example.PaginationDemo.dto.CourseTeacherRequestDto;
+import com.example.PaginationDemo.dto.*;
 import com.example.PaginationDemo.entities.Course;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,14 +30,17 @@ public class CourseController {
     public ResponseEntity<?> findPaginated(@PathVariable(value = "pageNo") int pageNo){
         Page<Course> page = courseService.findPaginated(pageNo);
         List<Course> courseList = page.getContent();
+        if(pageNo > page.getTotalPages()){
+            throw new ResetContent("Reset Content");
+        }
         return new ResponseEntity<>(courseList, HttpStatus.OK);
     }
 
-    @GetMapping("/getAllCourseByCourseId/{courseId}")
+    @GetMapping("/getCourseByCourseId/{courseId}")
     public  ResponseEntity<?> getCourse(@PathVariable Long courseId){
         CourseDto dto = courseService.getCourse(courseId);
         //List<Student> studentList = courseService
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        return new ResponseEntity<>(courseService.getCourse(courseId), HttpStatus.OK);
     }
 
     @PostMapping("/addCourse")

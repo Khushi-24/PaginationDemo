@@ -1,9 +1,9 @@
 package com.example.PaginationDemo.Repository;
 
+import com.example.PaginationDemo.dto.CourseDto;
 import com.example.PaginationDemo.entities.Course;
 import com.example.PaginationDemo.entities.CourseStudent;
 import com.example.PaginationDemo.entities.Student;
-import com.example.PaginationDemo.entities.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,9 +16,8 @@ import java.util.List;
 public interface CourseStudentRepository extends JpaRepository<CourseStudent, Long> {
     boolean existsByCourseAndStudent(Course course, Student student);
 
-
-    @Query(value = "Select course_student.student_id, student.student_name FROM `course_student`  Inner Join `student` on course_student.student_id = student.student_id WHERE course_id =?1", nativeQuery = true)
-    List<Student> getStudentByCourseId(Long courseId);
+    @Query(value = "Select new CourseDto(course_student.student_id, student.student_name) FROM `course_student`  Inner Join `student` on course_student.student_id = student.student_id WHERE course_id =?1", nativeQuery = true)
+    List<CourseDto> getStudentByCourseCourseId(Long courseId);
 
     @Modifying
     @Transactional
