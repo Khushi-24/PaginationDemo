@@ -7,6 +7,7 @@ import com.example.PaginationDemo.Service.CourseService;
 import com.example.PaginationDemo.dto.*;
 import com.example.PaginationDemo.entities.*;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -96,8 +97,12 @@ public class CourseServiceImpl implements CourseService {
             courseDto.setCourseName(course.getCourseName());
             courseDto.setCourseDuration(course.getCourseDuration());
             courseDto.setCourseDescription(course.getCourseDescription());
-            List<CourseDto> studentList = courseStudentRepository.getStudentByCourseCourseId(courseDto.getCourseId());
-         //   courseDto.setStudentList(studentList);
+            Long courseId1 = courseDto.getCourseId();
+            List<StudentResponseDto> studentList = courseStudentRepository.getStudentByCourseCourseId(courseId1);
+            courseDto.setStudentList(studentList);
+          //  List<CourseDto> studentList = courseStudentRepository.getStudentByCourseCourseId((long)3);
+
+            //   courseDto.setStudentList(studentList);
             //courseDto.setStudentList(studentList);
 //            for(int i=0;i<studentList.size();i++){
 //                System.out.println("Hello");
@@ -105,7 +110,7 @@ public class CourseServiceImpl implements CourseService {
 //            }
 //            List<CourseDto> courseDtoList = new ArrayList<>();
 //            BeanUtils.copyProperties(studentList, courseDtoList);
-            System.out.println("Hello" + studentList.size());
+           // System.out.println("Hello" + studentList.size());
             //courseDto.setStudentList(studentList);
 //            getList(studentList);
 //            List<Student> resultantStudentList= new ArrayList<>();
