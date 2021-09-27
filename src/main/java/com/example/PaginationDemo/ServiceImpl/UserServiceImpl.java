@@ -1,20 +1,45 @@
 package com.example.PaginationDemo.ServiceImpl;
 
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.example.PaginationDemo.CustomException.BadRequestException;
+import com.example.PaginationDemo.Repository.UserRepository;
+import com.example.PaginationDemo.Service.UserService;
+import com.example.PaginationDemo.dto.UserDto;
+import com.example.PaginationDemo.dto.UserResponseDto;
+import com.example.PaginationDemo.entities.User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
 @Service
-public class UserServiceImpl implements UserDetailsService {
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserResponseDto addUser(UserDto userDto) {
+        User user = new User();
+        UserResponseDto userResponseDto = new UserResponseDto();
+        if(userDto.getUserName() == null || userDto.getPassword() == null){
+            if(userDto.getUserName() == null){
+                throw new BadRequestException("UserName can't be null");
+            }
+            if(userDto.getPassword() == null){
+                throw new BadRequestException("Password can't be null");
+            }
+        }else{
+            if(!userRepository.existsById(userDto.getUserName())){
+                BeanUtils.copyProperties(userDto, user);
+                userRepository.save(user);
+                BeanUtils.copyProperties(user, userResponseDto);
+                return userResponseDto;
+            }
+            else{
+                throw new BadRequestException("User with userName= " +userDto.getUserName() +
+                        "  already exists.");
+            }
+        }
 
-        //Logic to get the user form the Database
-
-        return new User("admin", "password", new ArrayList<>());
+        return userResponseDto;
     }
 }
