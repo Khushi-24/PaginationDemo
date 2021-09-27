@@ -20,6 +20,11 @@ public class CourseController {
 
     private final CourseService courseService;
 
+    @GetMapping("/")
+    public String home(){
+        return "Welcome";
+    }
+
     @GetMapping("/getAllCourses")
     public ResponseEntity<?> getAllCourses(){
         List<CourseDto> courseList = courseService.getAllCourses();
