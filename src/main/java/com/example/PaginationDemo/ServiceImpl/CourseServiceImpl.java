@@ -105,22 +105,24 @@ public class CourseServiceImpl implements CourseService {
             StudentResponseDto studentResponseDto = new StudentResponseDto();
             ListIterator<CourseStudent> iterator = studentList.listIterator();
             List<StudentResponseDto> studentResponseDtoList = new ArrayList<>();
-            CourseStudent student;
-            while(iterator.hasNext()){
-                student = iterator.next();
-                Long id = student.getStudent().getStudentId();
-                studentResponseDto.setStudentId(id);
+//            CourseStudent student;
+//            while(iterator.hasNext()){
+//                student = iterator.next();
+//                Long id = student.getStudent().getStudentId();
+//                studentResponseDto.setStudentId(id);
+//
+//                String name = student.getStudent().getStudentName();
+//                studentResponseDto.setStudentName(name);
+//                studentResponseDtoList.add(studentResponseDto);
+//            }
+//            courseDto.setStudentList(studentResponseDtoList);
 
-                String name = student.getStudent().getStudentName();
-                studentResponseDto.setStudentName(name);
+            studentList.forEach((e) -> {
+                studentResponseDto.setStudentId(e.getStudent().getStudentId());
+                studentResponseDto.setStudentName(e.getStudent().getStudentName());
                 studentResponseDtoList.add(studentResponseDto);
-            }
+            });
             courseDto.setStudentList(studentResponseDtoList);
-
-//            List<StudentResponseDto> studentResponseDtoList= studentList.stream().forEach((e) -> {
-//                studentResponseDto.setStudentId(e.getStudent().getStudentId(),
-//                        studentResponseDto.setStudentName(e.getStudent().getStudentName());
-//            })
 
 //            List<StudentResponseDto> studentResponseDtoList= Lambda.extract
 

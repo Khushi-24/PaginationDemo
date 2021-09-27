@@ -1,9 +1,10 @@
 package com.example.PaginationDemo.Controller;
 
-import com.example.PaginationDemo.CustomException.BadRequestException;
 import com.example.PaginationDemo.CustomException.ResetContent;
 import com.example.PaginationDemo.Service.CourseService;
-import com.example.PaginationDemo.dto.*;
+import com.example.PaginationDemo.dto.CourseDto;
+import com.example.PaginationDemo.dto.CourseStudentRequestDto;
+import com.example.PaginationDemo.dto.CourseTeacherRequestDto;
 import com.example.PaginationDemo.entities.Course;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
