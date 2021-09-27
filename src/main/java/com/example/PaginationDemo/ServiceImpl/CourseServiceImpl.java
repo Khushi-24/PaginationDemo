@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 @Service
@@ -98,26 +100,32 @@ public class CourseServiceImpl implements CourseService {
             courseDto.setCourseDuration(course.getCourseDuration());
             courseDto.setCourseDescription(course.getCourseDescription());
             Long courseId1 = courseDto.getCourseId();
-            List<StudentResponseDto> studentList = courseStudentRepository.getStudentByCourseCourseId(courseId1);
-            courseDto.setStudentList(studentList);
-          //  List<CourseDto> studentList = courseStudentRepository.getStudentByCourseCourseId((long)3);
+            List<CourseStudent> studentList = courseStudentRepository.getStudentByCourseCourseId(courseId);
 
-            //   courseDto.setStudentList(studentList);
-            //courseDto.setStudentList(studentList);
-//            for(int i=0;i<studentList.size();i++){
-//                System.out.println("Hello");
-//                System.out.println(studentList.get(i));
-//            }
-//            List<CourseDto> courseDtoList = new ArrayList<>();
-//            BeanUtils.copyProperties(studentList, courseDtoList);
-           // System.out.println("Hello" + studentList.size());
-            //courseDto.setStudentList(studentList);
-//            getList(studentList);
-//            List<Student> resultantStudentList= new ArrayList<>();
-//            for(Student student : studentList ){
-//                resultantStudentList.add(student);
-//            }
-//            return (courseDto ,resultantStudentList);
+            StudentResponseDto studentResponseDto = new StudentResponseDto();
+            ListIterator<CourseStudent> iterator = studentList.listIterator();
+            List<StudentResponseDto> studentResponseDtoList = new ArrayList<>();
+            CourseStudent student;
+            while(iterator.hasNext()){
+                student = iterator.next();
+                Long id = student.getStudent().getStudentId();
+                studentResponseDto.setStudentId(id);
+
+                String name = student.getStudent().getStudentName();
+                studentResponseDto.setStudentName(name);
+                studentResponseDtoList.add(studentResponseDto);
+            }
+            courseDto.setStudentList(studentResponseDtoList);
+
+//            List<StudentResponseDto> studentResponseDtoList= studentList.stream().forEach((e) -> {
+//                studentResponseDto.setStudentId(e.getStudent().getStudentId(),
+//                        studentResponseDto.setStudentName(e.getStudent().getStudentName());
+//            })
+
+//            List<StudentResponseDto> studentResponseDtoList= Lambda.extract
+
+
+
             return courseDto;
         }
         else{

@@ -10,7 +10,6 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class StudentResponseDto {
 
     @NotNull(message = "Student Id can't be null")

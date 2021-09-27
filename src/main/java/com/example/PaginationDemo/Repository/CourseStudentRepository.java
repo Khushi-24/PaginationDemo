@@ -17,9 +17,9 @@ import java.util.List;
 public interface CourseStudentRepository extends JpaRepository<CourseStudent, Long> {
     boolean existsByCourseAndStudent(Course course, Student student);
 
-    //@Query(value = "Select course_student.student_id, student.student_name FROM `course_student`  Inner Join `student` on course_student.student_id = student.student_id WHERE course_id =?1", nativeQuery = true)
-    @Query(value = "Select new StudentResponseDto(course_student.student_id as studentId, student.student_name as studentName) FROM `course_student`  Inner Join `student` on course_student.student_id = student.student_id WHERE course_id =?1", nativeQuery = true)
-    List<StudentResponseDto> getStudentByCourseCourseId(Long courseId);
+    @Query(value = "Select * FROM `course_student`  Inner Join `student` on course_student.student_id = student.student_id WHERE course_id =?1", nativeQuery = true)
+    //@Query(value = "Select new StudentResponseDto(course_student.student_id as studentId, student.student_name as studentName) FROM `course_student`  Inner Join `student` on course_student.student_id = student.student_id WHERE course_id =?1", nativeQuery = true)
+    List<CourseStudent> getStudentByCourseCourseId(Long courseId);
 
     @Modifying
     @Transactional
