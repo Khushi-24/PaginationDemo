@@ -1,5 +1,6 @@
 package com.example.PaginationDemo.Controller;
 
+import com.example.PaginationDemo.CustomException.ResetContent;
 import com.example.PaginationDemo.Service.TeacherService;
 import com.example.PaginationDemo.dto.TeacherDto;
 import com.example.PaginationDemo.entities.Teacher;
@@ -27,6 +28,9 @@ public class TeacherController {
     public ResponseEntity<?> findPaginated(@PathVariable(value = "pageNo") int pageNo){
         Page<Teacher> page = teacherService.findPaginated(pageNo);
         List<Teacher> listTeacher = page.getContent();
+        if(pageNo > page.getTotalPages()){
+            throw new ResetContent("Reset Content");
+        }
         return new ResponseEntity<>(listTeacher, HttpStatus.OK);
     }
 
