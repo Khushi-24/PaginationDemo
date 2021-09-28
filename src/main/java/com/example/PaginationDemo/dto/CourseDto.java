@@ -36,4 +36,6 @@ public class CourseDto {
 
     private List<StudentResponseDto> studentList;
 
+    private List<TeacherDto> teacherList;
+
 }

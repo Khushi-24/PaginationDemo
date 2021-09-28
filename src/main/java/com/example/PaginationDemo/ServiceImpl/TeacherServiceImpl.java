@@ -5,7 +5,11 @@ import com.example.PaginationDemo.CustomException.NoRecordFoundException;
 import com.example.PaginationDemo.Repository.CourseTeacherRepository;
 import com.example.PaginationDemo.Repository.TeacherRepository;
 import com.example.PaginationDemo.Service.TeacherService;
+import com.example.PaginationDemo.dto.CourseResponseDto;
+import com.example.PaginationDemo.dto.StudentResponseDto;
 import com.example.PaginationDemo.dto.TeacherDto;
+import com.example.PaginationDemo.entities.CourseStudent;
+import com.example.PaginationDemo.entities.CourseTeacher;
 import com.example.PaginationDemo.entities.Teacher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +35,16 @@ public class TeacherServiceImpl implements TeacherService {
             TeacherDto teacherDto = new TeacherDto();
             teacherDto.setTeacherId(teacher.getTeacherId());
             teacherDto.setTeacherName(teacher.getTeacherName());
+            List<CourseTeacher> courseList = courseTeacherRepository.getCourseByTeacherTeacherId(teacherDto.getTeacherId());
+            List<CourseResponseDto> courseResponseDtoList = new ArrayList<>();
+
+            courseList.forEach((e) ->{
+                CourseResponseDto courseResponseDto = new CourseResponseDto();
+                courseResponseDto.setCourseId(e.getCourse().getCourseId());
+                courseResponseDto.setCourseName(e.getCourse().getCourseName());
+                courseResponseDtoList.add(courseResponseDto);
+            });
+            teacherDto.setCourseList(courseResponseDtoList);
             return teacherDto;
         }).collect(Collectors.toList());
         if(teacherDtoList.isEmpty()){
@@ -54,6 +69,16 @@ public class TeacherServiceImpl implements TeacherService {
             TeacherDto teacherDto = new TeacherDto();
             teacherDto.setTeacherId(teacher.getTeacherId());
             teacherDto.setTeacherName(teacher.getTeacherName());
+            List<CourseTeacher> courseList = courseTeacherRepository.getCourseByTeacherTeacherId(teacherId);
+            List<CourseResponseDto> courseResponseDtoList = new ArrayList<>();
+
+            courseList.forEach((e) ->{
+                CourseResponseDto courseResponseDto = new CourseResponseDto();
+                courseResponseDto.setCourseId(e.getCourse().getCourseId());
+                courseResponseDto.setCourseName(e.getCourse().getCourseName());
+                courseResponseDtoList.add(courseResponseDto);
+            });
+            teacherDto.setCourseList(courseResponseDtoList);
             return teacherDto;
         }
         else {

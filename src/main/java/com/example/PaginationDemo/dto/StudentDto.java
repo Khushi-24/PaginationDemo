@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,4 +29,5 @@ public class StudentDto {
     @NotBlank(message = "Student age can't be blank.")
     private Integer studentAge;
 
+    private List<CourseResponseDto> courseResponseDtoList;
 }

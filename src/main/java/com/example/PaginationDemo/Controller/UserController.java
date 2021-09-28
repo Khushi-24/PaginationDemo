@@ -6,6 +6,7 @@ import com.example.PaginationDemo.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,4 +23,9 @@ public class UserController {
         UserResponseDto addUser = userService.addUser(userDto);
         return  new ResponseEntity<>(addUser, HttpStatus.CREATED);
     }
+
+//    @GetMapping("/home")
+//    public String home(){
+//        return "Welcome";
+//    }
 }

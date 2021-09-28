@@ -7,8 +7,6 @@ import com.example.PaginationDemo.Service.CourseService;
 import com.example.PaginationDemo.dto.*;
 import com.example.PaginationDemo.entities.*;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,9 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,6 +45,30 @@ public class CourseServiceImpl implements CourseService {
             courseDto.setCourseName(course.getCourseName());
             courseDto.setCourseDuration(course.getCourseDuration());
             courseDto.setCourseDescription(course.getCourseDescription());
+            List<CourseStudent> studentList = courseStudentRepository.getStudentByCourseCourseId(courseDto.getCourseId());
+            List<StudentResponseDto> studentResponseDtoList = new ArrayList<>();
+
+            studentList.forEach((e) -> {
+                StudentResponseDto studentResponseDto = new StudentResponseDto();
+                studentResponseDto.setStudentId(e.getStudent().getStudentId());
+                studentResponseDto.setStudentName(e.getStudent().getStudentName());
+                studentResponseDtoList.add(studentResponseDto);
+            });
+
+            courseDto.setStudentList(studentResponseDtoList);
+
+            List<CourseTeacher> teacherList = courseTeacherRepository.getTeacherByCourseCourseId(courseDto.getCourseId());
+            List<TeacherDto> teacherDtoList = new ArrayList<>();
+
+            teacherList.forEach((e) -> {
+                TeacherDto teacherDto = new TeacherDto();
+                teacherDto.setTeacherId(e.getTeacher().getTeacherId());
+                teacherDto.setTeacherName(e.getTeacher().getTeacherName());
+                teacherDtoList.add(teacherDto);
+            });
+
+            courseDto.setTeacherList(teacherDtoList);
+
             return courseDto;
         }).collect(Collectors.toList());
         if(courseList.isEmpty()){
@@ -72,11 +92,13 @@ public class CourseServiceImpl implements CourseService {
         course.setCourseDuration(courseDto.getCourseDuration());
         Course savedStudent =courseRepository.save(course);
 
+
         CourseDto courseResponse = new CourseDto();
         courseResponse.setCourseId(savedStudent.getCourseId());
         courseResponse.setCourseName(savedStudent.getCourseName());
         courseResponse.setCourseDescription(savedStudent.getCourseDescription());
         courseResponse.setCourseDuration(savedStudent.getCourseDuration());
+
         return courseResponse;
 
     }
@@ -99,33 +121,28 @@ public class CourseServiceImpl implements CourseService {
             courseDto.setCourseName(course.getCourseName());
             courseDto.setCourseDuration(course.getCourseDuration());
             courseDto.setCourseDescription(course.getCourseDescription());
-            Long courseId1 = courseDto.getCourseId();
             List<CourseStudent> studentList = courseStudentRepository.getStudentByCourseCourseId(courseId);
-
-            StudentResponseDto studentResponseDto = new StudentResponseDto();
-            ListIterator<CourseStudent> iterator = studentList.listIterator();
             List<StudentResponseDto> studentResponseDtoList = new ArrayList<>();
-//            CourseStudent student;
-//            while(iterator.hasNext()){
-//                student = iterator.next();
-//                Long id = student.getStudent().getStudentId();
-//                studentResponseDto.setStudentId(id);
-//
-//                String name = student.getStudent().getStudentName();
-//                studentResponseDto.setStudentName(name);
-//                studentResponseDtoList.add(studentResponseDto);
-//            }
-//            courseDto.setStudentList(studentResponseDtoList);
 
             studentList.forEach((e) -> {
+                StudentResponseDto studentResponseDto = new StudentResponseDto();
                 studentResponseDto.setStudentId(e.getStudent().getStudentId());
                 studentResponseDto.setStudentName(e.getStudent().getStudentName());
                 studentResponseDtoList.add(studentResponseDto);
             });
             courseDto.setStudentList(studentResponseDtoList);
 
-//            List<StudentResponseDto> studentResponseDtoList= Lambda.extract
+            List<CourseTeacher> teacherList = courseTeacherRepository.getTeacherByCourseCourseId(courseId);
+            List<TeacherDto> teacherDtoList = new ArrayList<>();
 
+            teacherList.forEach((e) -> {
+                TeacherDto teacherDto = new TeacherDto();
+                teacherDto.setTeacherId(e.getTeacher().getTeacherId());
+                teacherDto.setTeacherName(e.getTeacher().getTeacherName());
+                teacherDtoList.add(teacherDto);
+            });
+
+            courseDto.setTeacherList(teacherDtoList);
 
 
             return courseDto;
@@ -280,3 +297,22 @@ public class CourseServiceImpl implements CourseService {
 
 
 }
+
+
+
+//            CourseStudent student;
+//            while(iterator.hasNext()){
+//                student = iterator.next();
+//                Long id = student.getStudent().getStudentId();
+//                studentResponseDto.setStudentId(id);
+//
+//                String name = student.getStudent().getStudentName();
+//                studentResponseDto.setStudentName(name);
+//                studentResponseDtoList.add(studentResponseDto);
+//            }
+//            courseDto.setStudentList(studentResponseDtoList);
+
+//            studentList.stream().forEach((e) -> {
+//                studentResponseDto.setStudentId(e.getStudent().getStudentId());
+//                studentResponseDto.setStudentName(e.getStudent().getStudentName());
+//                studentResponseDtoList.add(studentResponseDto);});

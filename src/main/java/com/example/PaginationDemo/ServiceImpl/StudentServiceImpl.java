@@ -5,8 +5,10 @@ import com.example.PaginationDemo.CustomException.NoRecordFoundException;
 import com.example.PaginationDemo.Repository.CourseStudentRepository;
 import com.example.PaginationDemo.Repository.StudentRepository;
 import com.example.PaginationDemo.Service.StudentService;
+import com.example.PaginationDemo.dto.CourseResponseDto;
 import com.example.PaginationDemo.dto.StudentDto;
 import com.example.PaginationDemo.entities.Course;
+import com.example.PaginationDemo.entities.CourseStudent;
 import com.example.PaginationDemo.entities.Student;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +38,18 @@ public class StudentServiceImpl implements StudentService {
             studentDto.setStudentName(student.getStudentName());
             studentDto.setStudentDivision(student.getStudentDivision());
             studentDto.setStudentAge(student.getStudentAge());
+
+            List<CourseStudent> courseList = courseStudentRepository.getCourseByStudentStudentId(studentDto.getStudentId());
+            List<CourseResponseDto> courseResponseDtoList = new ArrayList<>();
+
+            courseList.forEach((e) ->{
+                CourseResponseDto courseResponseDto = new CourseResponseDto();
+                courseResponseDto.setCourseId(e.getCourse().getCourseId());
+                courseResponseDto.setCourseName(e.getCourse().getCourseName());
+                courseResponseDtoList.add(courseResponseDto);
+            });
+
+            studentDto.setCourseResponseDtoList(courseResponseDtoList);
             return studentDto;
         }).collect(Collectors.toList());
 
@@ -62,6 +77,19 @@ public class StudentServiceImpl implements StudentService {
             studentDto.setStudentName(student.getStudentName());
             studentDto.setStudentDivision(student.getStudentDivision());
             studentDto.setStudentAge(student.getStudentAge());
+
+            List<CourseStudent> courseList = courseStudentRepository.getCourseByStudentStudentId(studentId);
+            List<CourseResponseDto> courseResponseDtoList = new ArrayList<>();
+
+            courseList.forEach((e) ->{
+                CourseResponseDto courseResponseDto = new CourseResponseDto();
+                courseResponseDto.setCourseId(e.getCourse().getCourseId());
+                courseResponseDto.setCourseName(e.getCourse().getCourseName());
+                courseResponseDtoList.add(courseResponseDto);
+            });
+
+            studentDto.setCourseResponseDtoList(courseResponseDtoList);
+
             return studentDto;
         }
         else {

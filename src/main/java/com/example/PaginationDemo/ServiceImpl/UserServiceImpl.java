@@ -8,6 +8,7 @@ import com.example.PaginationDemo.dto.UserResponseDto;
 import com.example.PaginationDemo.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDto addUser(UserDto userDto) {
@@ -29,9 +32,10 @@ public class UserServiceImpl implements UserService {
             }
         }else{
             if(!userRepository.existsById(userDto.getUserName())){
-                BeanUtils.copyProperties(userDto, user);
+                user.setUserName(userDto.getUserName());
+                user.setPassword(getEncodedPassword(userDto.getPassword()));
                 userRepository.save(user);
-                BeanUtils.copyProperties(user, userResponseDto);
+                userResponseDto.setUserName(user.getUserName());
                 return userResponseDto;
             }
             else{
@@ -41,5 +45,9 @@ public class UserServiceImpl implements UserService {
         }
 
         return userResponseDto;
+    }
+
+    public String getEncodedPassword(String password){
+        return  passwordEncoder.encode(password);
     }
 }

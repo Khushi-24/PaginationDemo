@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,5 +20,7 @@ public class TeacherDto {
     @NotNull(message = "Teacher name can't be null.")
     @NotBlank(message = "Teacher name can't be blank.")
     private String teacherName;
+
+    private List<CourseResponseDto> courseList;
 }
 
