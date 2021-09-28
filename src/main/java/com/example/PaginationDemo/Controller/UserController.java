@@ -24,8 +24,4 @@ public class UserController {
         return  new ResponseEntity<>(addUser, HttpStatus.CREATED);
     }
 
-//    @GetMapping("/home")
-//    public String home(){
-//        return "Welcome";
-//    }
 }

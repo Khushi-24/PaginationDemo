@@ -128,10 +128,15 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void deleteStudent(Long studentId) {
-        deleteStudentFromCourseStudentTable(studentId);
-//        Student student = studentRepository.getById(studentId);
-//        studentRepository.delete(student);
-        studentRepository.deleteStudentById(studentId);
+        if (studentId != null) {
+            studentRepository.findById(studentId).orElseThrow(() -> new EntityNotFoundException("Student does not exist"));
+            if (courseStudentRepository.existsByStudentStudentId(studentId)) {
+                courseStudentRepository.deleteByStudentId(studentId);
+            }
+            studentRepository.deleteStudentById(studentId);
+        }else {
+            throw  new BadRequestException("Student Id can't be null");
+        }
     }
 
     @Override

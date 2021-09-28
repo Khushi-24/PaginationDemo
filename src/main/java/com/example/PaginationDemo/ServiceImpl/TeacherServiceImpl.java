@@ -113,7 +113,14 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public void deleteTeacher(Long teacherId) {
-        deleteTeacherFromCourseTeacher(teacherId);
+        if (teacherId != null) {
+            teacherRepository.findById(teacherId).orElseThrow(() -> new EntityNotFoundException("Teacher does not exist"));
+            if (courseTeacherRepository.existsByTeacherTeacherId(teacherId)) {
+                courseTeacherRepository.deleteByTeacherTeacherId(teacherId);
+            }
+        }else {
+            throw  new BadRequestException("Teacher Id can't be null");
+        }
         teacherRepository.deleteTeacherById(teacherId);
     }
 
