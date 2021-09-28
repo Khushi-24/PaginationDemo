@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class NoRecordFoundException extends RuntimeException{
+public class EntityNotFoundException extends RuntimeException{
 
-    public NoRecordFoundException(String message){
+    public EntityNotFoundException(HttpStatus notFound, String message){
         super(message);
     }
 }

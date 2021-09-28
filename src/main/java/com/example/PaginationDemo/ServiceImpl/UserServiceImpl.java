@@ -7,7 +7,7 @@ import com.example.PaginationDemo.dto.UserDto;
 import com.example.PaginationDemo.dto.UserResponseDto;
 import com.example.PaginationDemo.entities.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +25,10 @@ public class UserServiceImpl implements UserService {
         UserResponseDto userResponseDto = new UserResponseDto();
         if(userDto.getUserName() == null || userDto.getPassword() == null){
             if(userDto.getUserName() == null){
-                throw new BadRequestException("UserName can't be null");
+                throw new BadRequestException(HttpStatus.BAD_REQUEST, "UserName can't be null");
             }
             if(userDto.getPassword() == null){
-                throw new BadRequestException("Password can't be null");
+                throw new BadRequestException(HttpStatus.BAD_REQUEST, "Password can't be null");
             }
         }else{
             if(!userRepository.existsById(userDto.getUserName())){
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
                 return userResponseDto;
             }
             else{
-                throw new BadRequestException("User with userName= " +userDto.getUserName() +
+                throw new BadRequestException(HttpStatus.BAD_REQUEST, "User with userName= " +userDto.getUserName() +
                         "  already exists.");
             }
         }

@@ -1,23 +1,21 @@
 package com.example.PaginationDemo.ServiceImpl;
 
 import com.example.PaginationDemo.CustomException.BadRequestException;
-import com.example.PaginationDemo.CustomException.NoRecordFoundException;
+import com.example.PaginationDemo.CustomException.EntityNotFoundException;
 import com.example.PaginationDemo.Repository.CourseTeacherRepository;
 import com.example.PaginationDemo.Repository.TeacherRepository;
 import com.example.PaginationDemo.Service.TeacherService;
 import com.example.PaginationDemo.dto.CourseResponseDto;
-import com.example.PaginationDemo.dto.StudentResponseDto;
 import com.example.PaginationDemo.dto.TeacherDto;
-import com.example.PaginationDemo.entities.CourseStudent;
 import com.example.PaginationDemo.entities.CourseTeacher;
 import com.example.PaginationDemo.entities.Teacher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,7 +46,7 @@ public class TeacherServiceImpl implements TeacherService {
             return teacherDto;
         }).collect(Collectors.toList());
         if(teacherDtoList.isEmpty()){
-            throw new NoRecordFoundException("Teacher list is empty");
+            throw new EntityNotFoundException(HttpStatus.NOT_FOUND, "Teacher list is empty");
         }
         else {
             return teacherDtoList;
@@ -82,7 +80,7 @@ public class TeacherServiceImpl implements TeacherService {
             return teacherDto;
         }
         else {
-            throw new EntityNotFoundException("Teacher doesn't exist");
+            throw new javax.persistence.EntityNotFoundException("Teacher doesn't exist");
         }
     }
 
@@ -107,19 +105,19 @@ public class TeacherServiceImpl implements TeacherService {
             return addTeacher(teacherDto);
         }
         else{
-            throw new EntityNotFoundException("Teacher doesn't exists so can't be updated");
+            throw new javax.persistence.EntityNotFoundException("Teacher doesn't exists so can't be updated");
         }
     }
 
     @Override
     public void deleteTeacher(Long teacherId) {
         if (teacherId != null) {
-            teacherRepository.findById(teacherId).orElseThrow(() -> new EntityNotFoundException("Teacher does not exist"));
+            teacherRepository.findById(teacherId).orElseThrow(() -> new javax.persistence.EntityNotFoundException("Teacher does not exist"));
             if (courseTeacherRepository.existsByTeacherTeacherId(teacherId)) {
                 courseTeacherRepository.deleteByTeacherTeacherId(teacherId);
             }
         }else {
-            throw  new BadRequestException("Teacher Id can't be null");
+            throw  new BadRequestException(HttpStatus.BAD_REQUEST, "Teacher Id can't be null");
         }
         teacherRepository.deleteTeacherById(teacherId);
     }
@@ -127,16 +125,16 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public void deleteTeacherFromCourseTeacher(Long teacherId) {
         if (teacherId != null) {
-            teacherRepository.findById(teacherId).orElseThrow(() -> new EntityNotFoundException("Teacher does not exist"));
+            teacherRepository.findById(teacherId).orElseThrow(() -> new javax.persistence.EntityNotFoundException("Teacher does not exist"));
             if(courseTeacherRepository.existsByTeacherTeacherId(teacherId)) {
                 courseTeacherRepository.deleteByTeacherTeacherId(teacherId);
             }else {
-                throw new EntityNotFoundException("Teacher doesn't exist so can't be deleted");
+                throw new javax.persistence.EntityNotFoundException("Teacher doesn't exist so can't be deleted");
             }
 
         }
         else{
-            throw new BadRequestException("Teacher Id can't be null");
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Teacher Id can't be null");
         }
     }
 

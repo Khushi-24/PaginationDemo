@@ -1,7 +1,7 @@
 package com.example.PaginationDemo.ServiceImpl;
 
 import com.example.PaginationDemo.CustomException.BadRequestException;
-import com.example.PaginationDemo.CustomException.NoRecordFoundException;
+import com.example.PaginationDemo.CustomException.EntityNotFoundException;
 import com.example.PaginationDemo.Repository.*;
 import com.example.PaginationDemo.Service.CourseService;
 import com.example.PaginationDemo.dto.*;
@@ -10,9 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,7 +72,7 @@ public class CourseServiceImpl implements CourseService {
             return courseDto;
         }).collect(Collectors.toList());
         if(courseList.isEmpty()){
-            throw  new NoRecordFoundException("List is empty.");
+            throw  new EntityNotFoundException(HttpStatus.NOT_FOUND, "List is empty.");
         }
         else {
             return courseList;
@@ -83,7 +83,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public CourseDto addCourse(CourseDto courseDto) {
         if(courseDto.getCourseName() == null){
-            throw new BadRequestException("Can't be null");
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Can't be null");
         }
         Course course = new Course();
         course.setCourseId(courseDto.getCourseId());
@@ -148,7 +148,7 @@ public class CourseServiceImpl implements CourseService {
             return courseDto;
         }
         else{
-            throw new EntityNotFoundException("Course doesn't exist");
+            throw new javax.persistence.EntityNotFoundException("Course doesn't exist");
         }
 
     }
@@ -158,15 +158,15 @@ public class CourseServiceImpl implements CourseService {
     public void addStudentToCourse(CourseStudentRequestDto request) {
         if(request.getStudentId() == null || request.getCourseId() == null){
             if(request.getStudentId() == null){
-                throw  new BadRequestException("Student Id can't be null");
+                throw  new BadRequestException(HttpStatus.BAD_REQUEST,"Student Id can't be null");
             }
             if(request.getCourseId() == null){
-                throw  new BadRequestException("Course Id can't be null");
+                throw  new BadRequestException(HttpStatus.BAD_REQUEST, "Course Id can't be null");
             }
         }
         else{
-            Student student = studentRepository.findById(request.getStudentId()).orElseThrow(() -> new EntityNotFoundException("Student does not exist."));
-            Course course = courseRepository.findById(request.getCourseId()).orElseThrow(() -> new EntityNotFoundException("Course does not exist"));
+            Student student = studentRepository.findById(request.getStudentId()).orElseThrow(() -> new javax.persistence.EntityNotFoundException("Student does not exist."));
+            Course course = courseRepository.findById(request.getCourseId()).orElseThrow(() -> new javax.persistence.EntityNotFoundException("Course does not exist"));
 
             CourseStudent courseStudent = new CourseStudent(student, course);
             if(!courseStudentRepository.existsByCourseAndStudent(course, student)){
@@ -179,15 +179,15 @@ public class CourseServiceImpl implements CourseService {
     public void addTeacherToCourse(CourseTeacherRequestDto request) {
         if(request.getTeacherId() == null || request.getCourseId() == null){
             if(request.getTeacherId() == null){
-                throw  new BadRequestException("Teacher Id can't be null");
+                throw  new BadRequestException(HttpStatus.BAD_REQUEST, "Teacher Id can't be null");
             }
             if(request.getCourseId() == null){
-                throw  new BadRequestException("Course Id can't be null");
+                throw  new BadRequestException(HttpStatus.BAD_REQUEST, "Course Id can't be null");
             }
         }
         else{
-            Teacher teacher = teacherRepository.findById(request.getTeacherId()).orElseThrow(() -> new EntityNotFoundException("Teacher does not exist."));
-            Course course = courseRepository.findById(request.getCourseId()).orElseThrow(() -> new EntityNotFoundException("Course does not exist"));
+            Teacher teacher = teacherRepository.findById(request.getTeacherId()).orElseThrow(() -> new javax.persistence.EntityNotFoundException("Teacher does not exist."));
+            Course course = courseRepository.findById(request.getCourseId()).orElseThrow(() -> new javax.persistence.EntityNotFoundException("Course does not exist"));
 
             CourseTeacher courseTeacher = new CourseTeacher(teacher, course);
             if(!courseTeacherRepository.existsByCourseAndTeacher(course, teacher)){
@@ -202,14 +202,14 @@ public class CourseServiceImpl implements CourseService {
             return addCourse(courseDto);
         }
         else{
-            throw new EntityNotFoundException("Course doesn't exists so can't be updated");
+            throw new javax.persistence.EntityNotFoundException("Course doesn't exists so can't be updated");
         }
     }
 
     @Override
     public void deleteCourse(Long courseId) {
         if (courseId != null) {
-            courseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException("Course does not exist"));
+            courseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException(HttpStatus.NOT_FOUND,"Course does not exist"));
             if (courseStudentRepository.existsByCourseCourseId(courseId)) {
                 courseStudentRepository.deleteByCourseId(courseId);
             }
@@ -218,7 +218,7 @@ public class CourseServiceImpl implements CourseService {
             }
             courseRepository.deleteCourseById(courseId);
         }else {
-            throw  new BadRequestException("Course Id can't be null");
+            throw  new BadRequestException(HttpStatus.BAD_REQUEST, "Course Id can't be null");
         }
 
     }
@@ -228,21 +228,21 @@ public class CourseServiceImpl implements CourseService {
     public void deleteStudentAndCourseFromCourseStudentTable(CourseStudentRequestDto courseStudentRequestDto) {
         if(courseStudentRequestDto.getStudentId() == null || courseStudentRequestDto.getCourseId() == null){
             if(courseStudentRequestDto.getStudentId() == null){
-                throw  new BadRequestException("Student Id can't be null");
+                throw  new BadRequestException(HttpStatus.BAD_REQUEST, "Student Id can't be null");
             }
             if(courseStudentRequestDto.getCourseId() == null){
-                throw  new BadRequestException("Course Id can't be null");
+                throw  new BadRequestException(HttpStatus.BAD_REQUEST, "Course Id can't be null");
             }
         }
         else{
-            Student student = studentRepository.findById(courseStudentRequestDto.getStudentId()).orElseThrow(() -> new EntityNotFoundException("Student does not exist."));
-            Course course = courseRepository.findById(courseStudentRequestDto.getCourseId()).orElseThrow(() -> new EntityNotFoundException("Course does not exist"));
+            Student student = studentRepository.findById(courseStudentRequestDto.getStudentId()).orElseThrow(() -> new javax.persistence.EntityNotFoundException("Student does not exist."));
+            Course course = courseRepository.findById(courseStudentRequestDto.getCourseId()).orElseThrow(() -> new javax.persistence.EntityNotFoundException("Course does not exist"));
 
             if(courseStudentRepository.existsByCourseAndStudent(course, student)){
                 courseStudentRepository.deleteByCourseCourseIdAndStudentStudentId(courseStudentRequestDto.getCourseId(), courseStudentRequestDto.getStudentId());
             }
             else{
-                throw new NoRecordFoundException("No such entry exists");
+                throw new EntityNotFoundException(HttpStatus.NOT_FOUND, "No such entry exists");
             }
         }
     }
@@ -250,30 +250,30 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void deleteCourseFromCourseStudentTable(Long courseId) {
         if (courseId != null) {
-            courseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException("Course does not exist"));
+            courseRepository.findById(courseId).orElseThrow(() -> new javax.persistence.EntityNotFoundException("Course does not exist"));
             if(courseStudentRepository.existsByCourseCourseId(courseId)) {
                 courseStudentRepository.deleteByCourseId(courseId);
             }else {
-                throw new EntityNotFoundException("Course doesn't exist so can't be deleted");
+                throw new javax.persistence.EntityNotFoundException("Course doesn't exist so can't be deleted");
             }
         }
         else{
-            throw new BadRequestException("Course Id can't be null");
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Course Id can't be null");
         }
     }
 
     @Override
     public void deleteCourseFromCourseTeacherTable(Long courseId) {
         if (courseId != null) {
-            courseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException("Course does not exist"));
+            courseRepository.findById(courseId).orElseThrow(() -> new javax.persistence.EntityNotFoundException("Course does not exist"));
             if(courseTeacherRepository.existsByCourseCourseId(courseId)) {
                 courseTeacherRepository.deleteByCourseId(courseId);
             }else {
-                throw new EntityNotFoundException("Course doesn't exist so can't be deleted");
+                throw new javax.persistence.EntityNotFoundException("Course doesn't exist so can't be deleted");
             }
         }
         else{
-            throw new BadRequestException("Course Id can't be null");
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Course Id can't be null");
         }
     }
 
@@ -283,21 +283,21 @@ public class CourseServiceImpl implements CourseService {
     public void deleteTeacherAndCourseFromCourseTeacherTable(CourseTeacherRequestDto courseTeacherRequestDto) {
         if(courseTeacherRequestDto.getTeacherId() == null || courseTeacherRequestDto.getCourseId() == null){
             if(courseTeacherRequestDto.getTeacherId() == null){
-                throw  new BadRequestException("Teacher Id can't be null");
+                throw  new BadRequestException(HttpStatus.BAD_REQUEST, "Teacher Id can't be null");
             }
             if(courseTeacherRequestDto.getCourseId() == null){
-                throw  new BadRequestException("Course Id can't be null");
+                throw  new BadRequestException(HttpStatus.BAD_REQUEST, "Course Id can't be null");
             }
         }
         else{
-            Teacher teacher = teacherRepository.findById(courseTeacherRequestDto.getTeacherId()).orElseThrow(() -> new EntityNotFoundException("Student does not exist."));
-            Course course = courseRepository.findById(courseTeacherRequestDto.getCourseId()).orElseThrow(() -> new EntityNotFoundException("Course does not exist"));
+            Teacher teacher = teacherRepository.findById(courseTeacherRequestDto.getTeacherId()).orElseThrow(() -> new javax.persistence.EntityNotFoundException("Student does not exist."));
+            Course course = courseRepository.findById(courseTeacherRequestDto.getCourseId()).orElseThrow(() -> new javax.persistence.EntityNotFoundException("Course does not exist"));
 
             if(courseTeacherRepository.existsByCourseAndTeacher(course, teacher)){
                 courseTeacherRepository.deleteByCourseCourseIdAndTeacherTeacherId(courseTeacherRequestDto.getCourseId(), courseTeacherRequestDto.getTeacherId());
             }
             else{
-                throw new NoRecordFoundException("No such entry exists");
+                throw new EntityNotFoundException(HttpStatus.NOT_FOUND, "No such entry exists");
             }
         }
     }

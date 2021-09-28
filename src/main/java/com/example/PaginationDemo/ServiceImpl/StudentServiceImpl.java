@@ -1,22 +1,21 @@
 package com.example.PaginationDemo.ServiceImpl;
 
 import com.example.PaginationDemo.CustomException.BadRequestException;
-import com.example.PaginationDemo.CustomException.NoRecordFoundException;
+import com.example.PaginationDemo.CustomException.EntityNotFoundException;
 import com.example.PaginationDemo.Repository.CourseStudentRepository;
 import com.example.PaginationDemo.Repository.StudentRepository;
 import com.example.PaginationDemo.Service.StudentService;
 import com.example.PaginationDemo.dto.CourseResponseDto;
 import com.example.PaginationDemo.dto.StudentDto;
-import com.example.PaginationDemo.entities.Course;
 import com.example.PaginationDemo.entities.CourseStudent;
 import com.example.PaginationDemo.entities.Student;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,7 +53,7 @@ public class StudentServiceImpl implements StudentService {
         }).collect(Collectors.toList());
 
         if(studentDtoList.isEmpty()){
-            throw  new NoRecordFoundException("Student list is empty.");
+            throw  new EntityNotFoundException(HttpStatus.NOT_FOUND, "Student list is empty.");
         }
         else{
             return studentDtoList;
@@ -93,7 +92,7 @@ public class StudentServiceImpl implements StudentService {
             return studentDto;
         }
         else {
-            throw new EntityNotFoundException("Student doesn't exist");
+            throw new javax.persistence.EntityNotFoundException("Student doesn't exist");
         }
     }
 
@@ -121,7 +120,7 @@ public class StudentServiceImpl implements StudentService {
             return addStudent(studentDto);
         }
         else{
-            throw new EntityNotFoundException("Student doesn't exists so can't be updated");
+            throw new javax.persistence.EntityNotFoundException("Student doesn't exists so can't be updated");
         }
 
     }
@@ -129,29 +128,29 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void deleteStudent(Long studentId) {
         if (studentId != null) {
-            studentRepository.findById(studentId).orElseThrow(() -> new EntityNotFoundException("Student does not exist"));
+            studentRepository.findById(studentId).orElseThrow(() -> new javax.persistence.EntityNotFoundException("Student does not exist"));
             if (courseStudentRepository.existsByStudentStudentId(studentId)) {
                 courseStudentRepository.deleteByStudentId(studentId);
             }
             studentRepository.deleteStudentById(studentId);
         }else {
-            throw  new BadRequestException("Student Id can't be null");
+            throw  new BadRequestException(HttpStatus.BAD_REQUEST, "Student Id can't be null");
         }
     }
 
     @Override
     public void deleteStudentFromCourseStudentTable(Long studentId) {
         if (studentId != null) {
-            studentRepository.findById(studentId).orElseThrow(() -> new EntityNotFoundException("Student does not exist"));
+            studentRepository.findById(studentId).orElseThrow(() -> new javax.persistence.EntityNotFoundException("Student does not exist"));
             if(courseStudentRepository.existsByStudentStudentId(studentId)) {
                 courseStudentRepository.deleteByStudentId(studentId);
             }else {
-                throw new EntityNotFoundException("Student doesn't exist so can't be deleted");
+                throw new javax.persistence.EntityNotFoundException("Student doesn't exist so can't be deleted");
             }
 
         }
         else{
-            throw new BadRequestException("Student Id can't be null");
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Student Id can't be null");
         }
     }
 
